@@ -1,0 +1,27 @@
+global
+    log stdout format raw local0
+
+defaults
+    mode http
+    log global
+    timeout connect 5s
+    timeout client 30s
+    timeout server 30s
+
+frontend fe_https
+    bind *:443 ssl crt /etc/ssl/certs/haproxy.pem
+    default_backend be_nginx
+
+backend be_nginx
+    balance roundrobin
+    option httpchk GET /health
+    http-check expect status 200
+{% for srv in web_servers %}
+    server {{ srv.name }} {{ srv.name }}:80 check inter 2s fall 2 rise 2
+{% endfor %}
+
+listen stats
+    bind *:8404
+    stats enable
+    stats uri /stats
+    stats refresh 10s

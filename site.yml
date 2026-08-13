@@ -1,0 +1,11 @@
+---
+- name: Deploiement du lab
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  roles:
+    - network
+    - nginx
+    - certs
+    - haproxy
