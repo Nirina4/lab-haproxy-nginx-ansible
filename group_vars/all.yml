@@ -1,0 +1,28 @@
+---
+web_servers:
+  - name: nginx1
+    team: "Equipe DevOps"
+    color: "#2c3e50"
+  - name: nginx2
+    team: "Equipe Reseau"
+    color: "#34495e"
+  - name: nginx3
+    team: "Equipe Securite"
+    color: "#1a5276"
+  - name: nginx4
+    team: "Equipe Base de donnees"
+    color: "#154360"
+  - name: nginx5
+    team: "Equipe Frontend"
+    color: "#0e6655"
+  - name: nginx6
+    team: "Equipe Backend"
+    color: "#145a32"
+
+nginx_conf_dir: "{{ playbook_dir }}/nginx_config"
+docker_network_name: lab_net
+nginx_image: "nginx:alpine"
+certs_dir: "{{ playbook_dir }}/certs"
+haproxy_cfg_dir: "{{ playbook_dir }}/haproxy_config"
+haproxy_container_name: haproxy_lb
+haproxy_image: "haproxy:2.9-alpine"

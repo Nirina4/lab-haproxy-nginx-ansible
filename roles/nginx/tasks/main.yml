@@ -1,0 +1,31 @@
+---
+- name: Creer un dossier de config par serveur
+  ansible.builtin.file:
+    path: "{{ nginx_conf_dir }}/{{ item.name }}"
+    state: directory
+    mode: '0755'
+  loop: "{{ web_servers }}"
+
+- name: Generer le fichier default.conf pour chaque serveur
+  ansible.builtin.template:
+    src: default.conf.j2
+    dest: "{{ nginx_conf_dir }}/{{ item.name }}/default.conf"
+  loop: "{{ web_servers }}"
+
+- name: Generer la page index.html pour chaque serveur
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: "{{ nginx_conf_dir }}/{{ item.name }}/index.html"
+  loop: "{{ web_servers }}"
+
+- name: Demarrer les conteneurs nginx
+  community.docker.docker_container:
+    name: "{{ item.name }}"
+    image: "{{ nginx_image }}"
+    state: started
+    networks:
+      - name: "{{ docker_network_name }}"
+    volumes:
+      - "{{ nginx_conf_dir }}/{{ item.name }}/default.conf:/etc/nginx/conf.d/default.conf:ro"
+      - "{{ nginx_conf_dir }}/{{ item.name }}/index.html:/usr/share/nginx/html/index.html:ro"
+  loop: "{{ web_servers }}"
