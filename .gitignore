@@ -1,6 +1,6 @@
-certs/
-nginx_config/
-haproxy_config/
+/certs/
+/nginx_config/
+/haproxy_config/
 *.key
 *.pem
 *.crt

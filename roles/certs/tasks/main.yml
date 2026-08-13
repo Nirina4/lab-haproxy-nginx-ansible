@@ -1,0 +1,26 @@
+---
+- name: Creer le repertoire des certificats
+  ansible.builtin.file:
+    path: "{{ certs_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Generer le certificat et la cle privee
+  ansible.builtin.command: >
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048
+    -keyout {{ certs_dir }}/haproxy.key
+    -out {{ certs_dir }}/haproxy.crt
+    -subj "/C=MG/ST=Analamanga/L=Antananarivo/O=Lab/CN=haproxy.local"
+  args:
+    creates: "{{ certs_dir }}/haproxy.crt"
+
+- name: Concatener crt et key en pem
+  ansible.builtin.shell: >
+    cat {{ certs_dir }}/haproxy.crt {{ certs_dir }}/haproxy.key > {{ certs_dir }}/haproxy.pem
+  args:
+    creates: "{{ certs_dir }}/haproxy.pem"
+
+- name: Rendre le pem lisible par le conteneur haproxy
+  ansible.builtin.file:
+    path: "{{ certs_dir }}/haproxy.pem"
+    mode: '0644'
