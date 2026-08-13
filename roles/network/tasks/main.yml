@@ -1,0 +1,5 @@
+- name: Creer le reseau docker
+  community.docker.docker_network:
+    name: lab_net
+    state: present
+    driver: bridge
